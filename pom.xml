@@ -11,9 +11,6 @@
 
     <modules>
         <module>taro-framework</module>
-        <!--<module>taro-admin</module>-->
-        <!--<module>taro-blog</module>-->
-        <module>taro-framework</module>
         <module>taro-admin</module>
         <module>taro-blog</module>
     </modules>
