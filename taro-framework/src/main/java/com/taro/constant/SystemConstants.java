@@ -15,5 +15,10 @@ public class SystemConstants
      * 正常状态
      */
     public static final String STATUS_NORMAL = "0";
+
+    /**
+     * 友联审核状态 0 表示通过
+     */
+    public static final int LINK_STATUS_NORMAL = 0;
     
 }

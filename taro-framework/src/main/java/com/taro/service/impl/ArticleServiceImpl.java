@@ -6,18 +6,22 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taro.constant.SystemConstants;
 import com.taro.domain.ResponseResult;
 import com.taro.domain.entity.Article;
+import com.taro.domain.vo.ArticleDetailVo;
 import com.taro.domain.vo.ArticleListVo;
 import com.taro.domain.vo.HotArticleVo;
 import com.taro.domain.vo.PageVo;
 import com.taro.mapper.ArticleMapper;
 import com.taro.service.ArticleService;
+import com.taro.service.CategoryService;
 import com.taro.utils.BeanCopyUtil;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 /**
  * ClassName ArticleServiceImpl
@@ -28,6 +32,10 @@ import java.util.Vector;
 
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
+
+    @Autowired
+    private CategoryService categoryService;
+
     @Override
     public ResponseResult hotArticleList() {
         //查询热门文章，不能把草稿展现出来，不能把删除的文章查询出来，根据浏览量降序排列
@@ -69,11 +77,27 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //分页查询
         Page<Article> page = new Page<>(pageNum, pageSize);
         page(page, queryWrapper);
+        //流处理，获取分类名
+        List<Article> articles = page.getRecords().stream()
+                .map(article -> article.setCategoryName(categoryService.getById(article.getCategoryId()).getName()))
+                .collect(Collectors.toList());
 
-        List<ArticleListVo> articleListVos = BeanCopyUtil.copyBeanList(page.getRecords(), ArticleListVo.class);
+        List<ArticleListVo> articleListVos = BeanCopyUtil.copyBeanList(articles, ArticleListVo.class);
 
         PageVo pageVo = new PageVo(articleListVos, page.getTotal());
 
         return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult articleDetails(Long id) {
+
+        Article article = super.getById(id);
+        String categoryName = categoryService.getById(article.getCategoryId()).getName();
+        if(categoryName != null) article.setCategoryName(categoryName);
+
+        ArticleDetailVo articleDetailVo = BeanCopyUtil.copyBean(article, ArticleDetailVo.class);
+
+        return ResponseResult.okResult(articleDetailVo);
     }
 }

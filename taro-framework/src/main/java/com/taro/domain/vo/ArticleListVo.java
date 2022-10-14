@@ -29,5 +29,6 @@ public class ArticleListVo {
 
     private Date createTime;
 
+    private String categoryName;
 
 }
