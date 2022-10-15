@@ -17,7 +17,7 @@ public class BeanCopyUtil {
     private BeanCopyUtil(){}
 
     //<T>说明是泛型方法，后面一个 T 说明返回类型是 T
-    public static <T>T copyBean(Object source, Class<T> clazz){
+    public static <T> T copyBean(Object source, Class<T> clazz){
 
         T ret = null;
         //创建目标对象
