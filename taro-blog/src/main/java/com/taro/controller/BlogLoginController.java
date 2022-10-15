@@ -2,10 +2,14 @@ package com.taro.controller;
 
 import com.taro.domain.ResponseResult;
 import com.taro.domain.entity.User;
+import com.taro.enums.AppHttpCodeEnum;
+import com.taro.exception.SystemException;
 import com.taro.service.BlogLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,6 +27,14 @@ public class BlogLoginController {
 
     @PostMapping("/login")
     public ResponseResult login(@RequestBody User user) {
+        if(!StringUtils.hasText(user.getUserName())){
+            throw new SystemException(AppHttpCodeEnum.REQUIRE_USERNAME);
+        }
         return blogLoginService.login(user);
+    }
+
+    @PostMapping("/logout")
+    public ResponseResult logout(){
+        return blogLoginService.logout();
     }
 }

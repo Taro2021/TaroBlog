@@ -8,11 +8,13 @@ import com.taro.utils.JwtUtil;
 import com.taro.utils.RedisCache;
 import com.taro.utils.WebUtils;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,6 +34,7 @@ import java.util.Objects;
 
 //配置 jwt 过滤器，协助完成 token 验证
 @Component
+@Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -64,7 +67,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         //从解析数据中获取 userId
         String userId = claims.getSubject();
         //从 redis 中获取信息
-        LoginUser loginUser = redisCache.getCacheObject("bloglogin:" + userId);
+        LoginUser loginUser = redisCache.getCacheObject("blog:" + userId);
+        log.info( "Filter: {}","blog:" + userId);
 
         if(Objects.isNull(loginUser)) {//登录过期
             ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);

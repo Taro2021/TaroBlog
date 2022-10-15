@@ -9,10 +9,12 @@ import com.taro.service.BlogLoginService;
 import com.taro.utils.BeanCopyUtil;
 import com.taro.utils.JwtUtil;
 import com.taro.utils.RedisCache;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -25,6 +27,7 @@ import java.util.Objects;
  */
 
 @Service
+@Slf4j
 public class BlogLoginServiceImpl implements BlogLoginService {
 
     //AuthenticationManager 来完成认证，需要手动注入 ioc 才能装配
@@ -48,16 +51,29 @@ public class BlogLoginServiceImpl implements BlogLoginService {
 
         //获取 userid 生成 token
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();//获取认证主体，就是 UserDetailsService 中返回的结果
-        Long userId = loginUser.getUser().getId();
+        String userId = loginUser.getUser().getId().toString();
         //jwt 工具类生成 token
-        String jwt = JwtUtil.createJWT(userId.toString());
+        String jwt = JwtUtil.createJWT(userId);
 
         //把用户信息存入 redis
-        redisCache.setCacheObject("bolglogin:"+userId, loginUser);
+        redisCache.setCacheObject("blog:" + userId, loginUser);
 
         //把 token 和 userinfo 封装返回
         UserInfoVo userInfoVo = BeanCopyUtil.copyBean(loginUser.getUser(), UserInfoVo.class);
         BlogUserLoginVo vo = new BlogUserLoginVo(jwt, userInfoVo);
         return ResponseResult.okResult(vo);
+    }
+
+    @Override
+    public ResponseResult logout() {
+        //获取 token
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //token 通过 jwt 解析获取 userId
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        Long userId = loginUser.getUser().getId();
+
+        //删除 redis 中的用户信息
+        redisCache.deleteObject("blog:" + userId);
+        return ResponseResult.okResult();
     }
 }
