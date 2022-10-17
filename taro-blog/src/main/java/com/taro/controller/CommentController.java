@@ -1,11 +1,11 @@
 package com.taro.controller;
 
+import com.taro.constant.SystemConstants;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.entity.Comment;
 import com.taro.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * ClassName CommentController
@@ -23,6 +23,17 @@ public class CommentController {
 
     @GetMapping("/commentList")
     public ResponseResult commentList(Long articleId, Integer pageNum, Integer pageSize){
-        return commentService.commentList(articleId, pageNum, pageSize);
+        return commentService.commentList(SystemConstants.ARTICLE_COMMENT, articleId, pageNum, pageSize);
+    }
+
+    //添加评论会携带 token 需要登录才可以评论
+    @PostMapping
+    public ResponseResult addComment(@RequestBody Comment comment){
+        return commentService.addComment(comment);
+    }
+
+    @GetMapping("/linkCommentList")
+    public ResponseResult linkCommentList(Integer pageNum, Integer pageSize){
+        return commentService.commentList(SystemConstants.LINK_COMMENT, null, pageNum, pageSize);
     }
 }
