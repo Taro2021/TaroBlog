@@ -4,9 +4,7 @@ import com.taro.domain.ResponseResult;
 import com.taro.enums.AppHttpCodeEnum;
 import com.taro.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
@@ -30,7 +28,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseResult exceptionHandler(Exception e){
-        log.error("异常: ", e);
+        log.error("异常: {}", e.getMessage());
         return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR.getCode(), AppHttpCodeEnum.SYSTEM_ERROR.getMsg());
     }
 }

@@ -5,6 +5,8 @@ import com.taro.domain.entity.LoginUser;
 import com.taro.domain.entity.User;
 import com.taro.domain.vo.BlogUserLoginVo;
 import com.taro.domain.vo.UserInfoVo;
+import com.taro.enums.AppHttpCodeEnum;
+import com.taro.exception.SystemException;
 import com.taro.service.BlogLoginService;
 import com.taro.utils.BeanCopyUtil;
 import com.taro.utils.JwtUtil;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -43,10 +46,11 @@ public class BlogLoginServiceImpl implements BlogLoginService {
         //AuthenticationManager 调用的是 UserDetailService 中的方法实现验证
         //UserDetailService 默认去内存查询
         //需要重新创建一个 UserDetailService 的实现类，将默认去内存查询更改为数据库查询
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-        //判断是否认证通过
-        if(Objects.isNull(authenticate)){
-            throw new RuntimeException("用户名或密码错误");
+        Authentication authenticate = null;
+        try {
+            authenticate = authenticationManager.authenticate(authenticationToken);
+        } catch (AuthenticationException e) {//捕获认证失败异常
+            throw new SystemException(AppHttpCodeEnum.LOGIN_ERROR);
         }
 
         //获取 userid 生成 token

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.sql.SQLOutput;
 
 /**
  * ClassName OssDemo
@@ -71,5 +72,7 @@ public class OssDemo {
         }
 
     }
+
+
 
 }

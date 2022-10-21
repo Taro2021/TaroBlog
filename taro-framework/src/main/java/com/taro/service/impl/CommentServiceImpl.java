@@ -15,6 +15,7 @@ import com.taro.mapper.CommentMapper;
 import com.taro.service.CommentService;
 import com.taro.service.UserService;
 import com.taro.utils.BeanCopyUtil;
+import org.apache.poi.hssf.record.DVALRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -75,6 +76,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             User userById = userService.getById(commentVo.getCreateBy());
             if(userById != null) {
                 commentVo.setUsername(userById.getNickName());
+                String avatar = userById.getAvatar();
+                if(StringUtils.hasText(avatar)) {
+                    commentVo.setAvatar(avatar);
+                }
             }
 
             Long toCommentUserId = commentVo.getToCommentUserId();

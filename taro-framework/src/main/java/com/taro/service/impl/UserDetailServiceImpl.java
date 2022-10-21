@@ -3,15 +3,15 @@ package com.taro.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.taro.domain.entity.LoginUser;
 import com.taro.domain.entity.User;
+import com.taro.enums.AppHttpCodeEnum;
+import com.taro.exception.SystemException;
 import com.taro.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -30,14 +30,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private UserMapper userMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws SystemException {
         //根据用户名查询用户
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>();
         queryWrapper.eq(User::getUserName, username);
         User user = userMapper.selectOne(queryWrapper);
 
         //未查询到用户，抛出异常
-        if(Objects.isNull(user)) throw new UsernameNotFoundException("未注册用户");
+        if(Objects.isNull(user)) throw new SystemException(AppHttpCodeEnum.LOGIN_ERROR);
 
         //返回用户信息
         //TODO 查询权限信息封装

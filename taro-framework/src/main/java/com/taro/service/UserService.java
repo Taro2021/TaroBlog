@@ -14,4 +14,8 @@ import com.taro.domain.entity.User;
 public interface UserService extends IService<User> {
 
     ResponseResult getUserInfo();
+
+    ResponseResult updateUserInfo(User user);
+
+    ResponseResult registerUser(User user);
 }

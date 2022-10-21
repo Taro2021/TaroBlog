@@ -18,9 +18,14 @@ import org.springframework.stereotype.Component;
 public class AliyunOSSConfig {
 
     private String endpoint;
+
     private String accessKeyId;
+
     private String accessKeySecret;
+
     private String bucketName;
+
+    private String urlPrefix;
 
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
@@ -36,6 +41,10 @@ public class AliyunOSSConfig {
 
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
+    }
+
+    public void setUrlPrefix(String urlPrefix) {
+        this.urlPrefix = urlPrefix;
     }
 
     public OSS ossClient(){

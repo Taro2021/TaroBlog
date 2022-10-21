@@ -1,12 +1,10 @@
 package com.taro.controller;
 
 import com.taro.domain.ResponseResult;
+import com.taro.domain.entity.User;
 import com.taro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * ClassName UserContriller
@@ -25,6 +23,16 @@ public class UserController {
     @GetMapping("/userInfo")
     public ResponseResult getUserInfo() {
         return userService.getUserInfo();
+    }
+
+    @PutMapping("/userInfo")
+    public ResponseResult saveUserInfo(@RequestBody User user){
+        return userService.updateUserInfo(user);
+    }
+
+    @PostMapping("/register")
+    public ResponseResult registerUser(@RequestBody User user){
+        return userService.registerUser(user);
     }
 
 }

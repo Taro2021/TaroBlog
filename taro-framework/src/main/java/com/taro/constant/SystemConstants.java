@@ -32,4 +32,9 @@ public class SystemConstants
     public static final String ARTICLE_COMMENT = "0";
     public static final String LINK_COMMENT = "1";
 
+    /**
+     * 头像大小限制 1M
+     */
+    public static final long AVATAR_SIZE = 1024 * 1024;
+
 }

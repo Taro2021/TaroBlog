@@ -34,6 +34,9 @@ public class CommentVo {
     //回复目标评论id
     private Long toCommentId;
 
+    //头像
+    private String avatar;
+
     private Long createBy;
 
     private Date createTime;
