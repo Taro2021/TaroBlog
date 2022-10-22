@@ -30,7 +30,6 @@ import java.util.Objects;
  */
 
 @Service
-@Slf4j
 public class BlogLoginServiceImpl implements BlogLoginService {
 
     //AuthenticationManager 来完成认证，需要手动注入 ioc 才能装配

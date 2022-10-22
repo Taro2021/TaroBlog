@@ -1,5 +1,6 @@
 package com.taro.controller;
 
+import com.taro.annotation.SystemLog;
 import com.taro.domain.ResponseResult;
 import com.taro.domain.entity.User;
 import com.taro.service.UserService;
@@ -21,6 +22,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/userInfo")
+    @SystemLog(businessName = "获取用户信息")
     public ResponseResult getUserInfo() {
         return userService.getUserInfo();
     }

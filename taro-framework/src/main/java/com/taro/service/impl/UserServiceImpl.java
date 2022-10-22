@@ -29,7 +29,6 @@ import java.util.Objects;
  * @since 2022-10-14 19:41:05
  */
 @Service("userService")
-@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Autowired

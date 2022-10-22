@@ -17,6 +17,11 @@ public class RedisCache
     @Autowired
     public RedisTemplate redisTemplate;
 
+    //更新 redis 中的浏览量, redis 中 long 会自动转换为 int
+    public void incrementCacheMapValue(String key, String hKey, long v){
+        redisTemplate.boundHashOps(key).increment(hKey,v);
+    }
+
     /**
      * 缓存基本的对象，Integer、String、实体类等
      *

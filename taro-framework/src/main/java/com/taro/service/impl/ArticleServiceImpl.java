@@ -14,6 +14,7 @@ import com.taro.mapper.ArticleMapper;
 import com.taro.service.ArticleService;
 import com.taro.service.CategoryService;
 import com.taro.utils.BeanCopyUtil;
+import com.taro.utils.RedisCache;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private RedisCache redisCache;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -93,11 +97,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public ResponseResult articleDetails(Long id) {
 
         Article article = super.getById(id);
+        //从 redis 缓存中读取浏览量
+        Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
+        article.setViewCount(viewCount.longValue());
+
         String categoryName = categoryService.getById(article.getCategoryId()).getName();
         if(categoryName != null) article.setCategoryName(categoryName);
 
         ArticleDetailVo articleDetailVo = BeanCopyUtil.copyBean(article, ArticleDetailVo.class);
 
         return ResponseResult.okResult(articleDetailVo);
+    }
+
+    //更新 redis 中文章浏览量
+    @Override
+    public ResponseResult updateViewCount(Long id) {
+        redisCache.incrementCacheMapValue("article:viewCount", id.toString(), 1);
+        return ResponseResult.okResult();
     }
 }
