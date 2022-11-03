@@ -2,7 +2,9 @@ package com.taro.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.LinkListDto;
 import com.taro.domain.entity.Link;
+import com.taro.domain.vo.PageVo;
 
 
 /**
@@ -14,4 +16,10 @@ import com.taro.domain.entity.Link;
 public interface LinkService extends IService<Link> {
 
     ResponseResult getAllLinks();
+
+    ResponseResult<PageVo> pageLinkList(Integer pageNum, Integer pageSize, LinkListDto linkListDto);
+
+    ResponseResult getLinkById(Long id);
+
+    ResponseResult changeLinkStatus(LinkListDto linkDto);
 }

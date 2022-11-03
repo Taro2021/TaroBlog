@@ -37,4 +37,10 @@ public class SystemConstants
      */
     public static final long AVATAR_SIZE = 1024 * 1024;
 
+    /**
+     * 菜单类型
+     */
+    public static final String MENU = "C";
+    public static final String BUTTON = "F";
+
 }

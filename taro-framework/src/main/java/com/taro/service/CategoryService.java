@@ -2,7 +2,9 @@ package com.taro.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.CategoryListDto;
 import com.taro.domain.entity.Category;
+import com.taro.domain.vo.PageVo;
 
 
 /**
@@ -14,4 +16,8 @@ import com.taro.domain.entity.Category;
 public interface CategoryService extends IService<Category> {
 
     ResponseResult getCategoryList();
+
+    ResponseResult<PageVo> pageCategoryList(Integer pageNum, Integer pageSize, CategoryListDto categoryListDto);
+
+    ResponseResult getCategoryById(Long id);
 }

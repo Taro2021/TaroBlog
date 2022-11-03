@@ -2,20 +2,24 @@ package com.taro.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taro.constant.SystemConstants;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.CategoryListDto;
 import com.taro.domain.entity.Article;
 import com.taro.domain.entity.Category;
+import com.taro.domain.vo.CategoryListVo;
 import com.taro.domain.vo.CategoryVo;
+import com.taro.domain.vo.PageVo;
 import com.taro.mapper.CategoryMapper;
 import com.taro.service.ArticleService;
 import com.taro.service.CategoryService;
 import com.taro.utils.BeanCopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,6 +58,34 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         List<CategoryVo> categoryVos = BeanCopyUtil.copyBeanList(categories, CategoryVo.class);
 
         return ResponseResult.okResult(categoryVos);
+    }
+
+    @Override
+    public ResponseResult<PageVo> pageCategoryList(Integer pageNum, Integer pageSize, CategoryListDto categoryListDto) {
+
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(StringUtils.hasText(categoryListDto.getName()), Category :: getName, categoryListDto.getName());
+        queryWrapper.eq(StringUtils.hasText(categoryListDto.getStatus()), Category :: getStatus, categoryListDto.getStatus());
+
+        Page<Category> page = new Page<>();
+        page.setCurrent(pageNum);
+        page.setSize(pageSize);
+        page(page, queryWrapper);
+
+        List<CategoryListVo> categoryListVos = page.getRecords()
+                .stream()
+                .map(category -> BeanCopyUtil.copyBean(category, CategoryListVo.class))
+                .collect(Collectors.toList());
+
+        PageVo pageVo = new PageVo(categoryListVos, page.getTotal());
+        return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult getCategoryById(Long id) {
+        Category category = super.getById(id);
+        CategoryListVo categoryListVo = BeanCopyUtil.copyBean(category, CategoryListVo.class);
+        return ResponseResult.okResult(categoryListVo);
     }
 
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taro.constant.SystemConstants;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.ArticleListDto;
 import com.taro.domain.entity.Article;
 import com.taro.domain.vo.ArticleDetailVo;
 import com.taro.domain.vo.ArticleListVo;
@@ -18,6 +19,7 @@ import com.taro.utils.RedisCache;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -115,4 +117,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         redisCache.incrementCacheMapValue("article:viewCount", id.toString(), 1);
         return ResponseResult.okResult();
     }
+
+    @Override
+    public ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(StringUtils.hasText(articleListDto.getTitle()), Article :: getTitle, articleListDto.getTitle());
+        queryWrapper.eq(StringUtils.hasText(articleListDto.getSummary()), Article :: getSummary, articleListDto.getSummary());
+
+        Page<Article> page = new Page<>(pageNum, pageSize);
+        page(page, queryWrapper);
+        List<ArticleListVo> articleListVos = page.getRecords()
+                .stream()
+                .map(article -> BeanCopyUtil.copyBean(article, ArticleListVo.class))
+                .collect(Collectors.toList());
+
+        PageVo pageVo = new PageVo(articleListVos, page.getTotal());
+
+        return ResponseResult.okResult(pageVo);
+    }
+
 }

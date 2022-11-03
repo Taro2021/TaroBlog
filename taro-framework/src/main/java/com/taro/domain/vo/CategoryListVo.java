@@ -5,30 +5,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 /**
- * ClassName LinkVo
+ * ClassName CategoryListVo
  * Author taro
- * Date 2022/10/14 11:01
+ * Date 2022/11/3 14:01
  * Version 1.0
  */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LinkVo {
+public class CategoryListVo {
+
     @TableId
     private Long id;
-
+    //分类名
     private String name;
-
-    private String logo;
-
+    //描述
     private String description;
-    //网站地址
-    private String address;
-
+    //状态0:正常,1禁用
     private String status;
 
 }

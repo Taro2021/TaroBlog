@@ -1,5 +1,5 @@
 server:
-  port: 7777
+  port: 8989
 
 spring:
   datasource:
@@ -18,15 +18,8 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-      logic-delete-field: delFlag #配置 mybatis-plus 删除为逻辑删除，降低删除时的表间关联关系来来的时间复杂度
+      logic-delete-field: delFlag
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
-#阿里云 oss
-aliyun:
-  oss:
-    endpoint: https://oss-cn-hangzhou.aliyuncs.com
-    accessKeyId: LTAI5tLyqB9vwfakL2buSS6W
-    accessKeySecret: o5DF522z5xXDbyLOkujJxo2OxH3kza
-    bucketname: taro-blog
-    urlPrefix: https://taro-blog.oss-cn-hangzhou.aliyuncs.com
+  mapper-locations: classpath*:/com/taro/mapper/*.xml

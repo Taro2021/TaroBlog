@@ -2,7 +2,9 @@ package com.taro.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.ArticleListDto;
 import com.taro.domain.entity.Article;
+import com.taro.domain.vo.PageVo;
 
 /**
  * ClassName AticleService
@@ -19,4 +21,7 @@ public interface ArticleService extends IService<Article>{
     ResponseResult articleDetails(Long id);
 
     ResponseResult updateViewCount(Long id);
+
+    ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto);
+
 }
