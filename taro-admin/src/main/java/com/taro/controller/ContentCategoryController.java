@@ -3,10 +3,13 @@ package com.taro.controller;
 import com.taro.domain.ResponseResult;
 import com.taro.domain.dto.CategoryListDto;
 import com.taro.domain.entity.Category;
+import com.taro.domain.vo.CategoryVo;
 import com.taro.domain.vo.PageVo;
 import com.taro.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * ClassName CategoryController
@@ -27,15 +30,16 @@ public class ContentCategoryController {
         return categoryService.pageCategoryList(pageNum, pageSize, categoryListDto);
     }
 
-    @GetMapping("/{id}")
-    public ResponseResult getCategoryById(@PathVariable("id") Long id) {
+    @GetMapping("/listAllCategory")
+    public ResponseResult listAllCategory(){
+        return categoryService.listAllCategory();
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseResult getCategoryById(@PathVariable(value = "id") Long id) {
         return categoryService.getCategoryById(id);
     }
 
-    @GetMapping("/listAllCategory ")
-    public ResponseResult getCategoryList(){
-        return categoryService.getCategoryList();
-    }
 
     @PutMapping
     public ResponseResult updateCategory(@RequestBody Category category) {

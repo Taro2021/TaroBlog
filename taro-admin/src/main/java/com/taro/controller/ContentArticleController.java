@@ -1,6 +1,7 @@
 package com.taro.controller;
 
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.AddArticleDto;
 import com.taro.domain.dto.ArticleListDto;
 import com.taro.domain.entity.Article;
 import com.taro.domain.vo.PageVo;
@@ -33,9 +34,13 @@ public class ContentArticleController {
     }
 
     @PutMapping
-    public ResponseResult updateArticle(@RequestBody Article article) {
-        articleService.updateById(article);
-        return ResponseResult.okResult();
+    public ResponseResult updateArticle(@RequestBody AddArticleDto addArticleDto) {
+        return articleService.updateArticle(addArticleDto);
+    }
+
+    @PostMapping
+    public ResponseResult addArticle(@RequestBody AddArticleDto addArticleDto) {
+        return articleService.addArticle(addArticleDto);
     }
 
     @DeleteMapping("/{id}")

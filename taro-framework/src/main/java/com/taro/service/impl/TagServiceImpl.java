@@ -14,6 +14,8 @@ import com.taro.utils.BeanCopyUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 /**
  * 标签(Tag)表服务实现类
  *
@@ -43,6 +45,13 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
         Tag tag = super.getById(id);
         TagVo tagVo = BeanCopyUtil.copyBean(tag, TagVo.class);
         return ResponseResult.okResult(tagVo);
+    }
+
+    @Override
+    public ResponseResult listAllTag() {
+        List<Tag> tags = super.list();
+        List<TagVo> tagVos = BeanCopyUtil.copyBeanList(tags, TagVo.class);
+        return ResponseResult.okResult(tagVos);
     }
 }
 

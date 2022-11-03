@@ -9,6 +9,8 @@ import com.taro.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * ClassName TagController
  * Author taro
@@ -28,20 +30,25 @@ public class TagController {
         return tagService.pageTagList(pageNum, pageSize, tagListDto);
     }
 
+    @GetMapping("/listAllTag")
+    public ResponseResult listAllTag(){
+        return tagService.listAllTag();
+    }
+
     @PostMapping
     public ResponseResult saveTag(@RequestBody Tag tag) {
         tagService.save(tag);
         return ResponseResult.okResult();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping( "/{id}")
     public ResponseResult deleteTag(@PathVariable("id") Long id) {
         tagService.removeById(id);
         return ResponseResult.okResult();
     }
 
-    @GetMapping("/{id}")
-    public ResponseResult<TagVo> getTagById(@PathVariable("id") Long id) {
+    @GetMapping(value = "/{id}")
+    public ResponseResult<TagVo> getTagById(@PathVariable(value = "id") Long id) {
         return tagService.getTagById(id);
     }
 
@@ -50,4 +57,5 @@ public class TagController {
         tagService.updateById(tag);
         return ResponseResult.okResult();
     }
+
 }

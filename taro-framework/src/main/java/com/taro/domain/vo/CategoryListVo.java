@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryListVo {
 
-    @TableId
     private Long id;
     //分类名
     private String name;
