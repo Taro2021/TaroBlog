@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true) //能够对方法使用权限校验注解
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired

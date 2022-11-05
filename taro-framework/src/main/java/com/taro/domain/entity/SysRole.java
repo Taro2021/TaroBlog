@@ -1,4 +1,4 @@
-package com.taro.entity;
+package com.taro.domain.entity;
 
 import java.util.Date;
 

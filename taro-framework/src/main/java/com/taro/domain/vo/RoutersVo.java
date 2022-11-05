@@ -1,6 +1,6 @@
-package com.taro.entity.vo;
+package com.taro.domain.vo;
 
-import com.taro.entity.SysMenu;
+import com.taro.domain.entity.SysMenu;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

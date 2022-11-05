@@ -1,10 +1,12 @@
 package com.taro.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.taro.constant.SystemConstants;
 import com.taro.domain.entity.LoginUser;
 import com.taro.domain.entity.User;
 import com.taro.enums.AppHttpCodeEnum;
 import com.taro.exception.SystemException;
+import com.taro.mapper.SysMenuMapper;
 import com.taro.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,6 +32,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private SysMenuMapper sysMenuMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws SystemException {
         //根据用户名查询用户
@@ -40,8 +46,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
         if(Objects.isNull(user)) throw new SystemException(AppHttpCodeEnum.LOGIN_ERROR);
 
         //返回用户信息
-        //TODO 查询权限信息封装
+        //TODO 查询权限信息封装，后台用户需要做权限查询
+        if(SystemConstants.SYSTEM_ADMIN.equals(user.getType())) {
+            List<String> perms = sysMenuMapper.selectPermsByUserId(user.getId());
+            return new LoginUser(user, perms);
+        }
 
-        return new LoginUser(user);
+        return new LoginUser(user, null);
     }
 }

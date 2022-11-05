@@ -43,4 +43,9 @@ public class SystemConstants
     public static final String MENU = "C";
     public static final String BUTTON = "F";
 
+    /**
+     * 用户类型 0 普通用户， 1 后台管理员
+     */
+    public static final String NORMAL_USER = "0";
+    public static final String SYSTEM_ADMIN = "1";
 }

@@ -1,7 +1,7 @@
 package com.taro.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.taro.entity.SysMenu;
+import com.taro.domain.entity.SysMenu;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

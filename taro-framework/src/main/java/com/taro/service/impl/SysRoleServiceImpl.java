@@ -1,10 +1,9 @@
 package com.taro.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.taro.entity.SysRole;
+import com.taro.domain.entity.SysRole;
 import com.taro.mapper.SysRoleMapper;
 import com.taro.service.SysRoleService;
-import org.apache.commons.math3.geometry.Vector;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.taro.entity.vo;
+package com.taro.domain.vo;
 
 import com.taro.domain.vo.UserInfoVo;
 import lombok.AllArgsConstructor;

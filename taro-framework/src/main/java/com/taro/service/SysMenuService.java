@@ -1,7 +1,7 @@
 package com.taro.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.taro.entity.SysMenu;
+import com.taro.domain.entity.SysMenu;
 
 import java.util.List;
 

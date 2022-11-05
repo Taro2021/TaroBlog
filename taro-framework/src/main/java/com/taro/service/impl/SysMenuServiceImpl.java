@@ -3,7 +3,7 @@ package com.taro.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taro.constant.SystemConstants;
-import com.taro.entity.SysMenu;
+import com.taro.domain.entity.SysMenu;
 import com.taro.mapper.SysMenuMapper;
 import com.taro.service.SysMenuService;
 import org.springframework.stereotype.Service;

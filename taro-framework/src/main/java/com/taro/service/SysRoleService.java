@@ -1,7 +1,7 @@
 package com.taro.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.taro.entity.SysRole;
+import com.taro.domain.entity.SysRole;
 
 import java.util.List;
 

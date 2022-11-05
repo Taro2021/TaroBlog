@@ -13,6 +13,7 @@ import com.taro.service.CategoryService;
 import com.taro.utils.BeanCopyUtil;
 import com.taro.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,40 +35,46 @@ public class ContentCategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @PreAuthorize("@ps.hasPermission('content:category:list')")
     @GetMapping("/list")
     public ResponseResult<PageVo> categoryList(Integer pageNum, Integer pageSize, CategoryListDto categoryListDto){
         return categoryService.pageCategoryList(pageNum, pageSize, categoryListDto);
     }
 
+    @PreAuthorize("@ps.hasPermission('content:category:list')")
     @GetMapping("/listAllCategory")
     public ResponseResult listAllCategory(){
         return categoryService.listAllCategory();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:category:list')")
     @GetMapping(value = "/{id}")
     public ResponseResult getCategoryById(@PathVariable(value = "id") Long id) {
         return categoryService.getCategoryById(id);
     }
 
-
+    @PreAuthorize("@ps.hasPermission('content:category:list')")
     @PutMapping
     public ResponseResult updateCategory(@RequestBody Category category) {
         categoryService.updateById(category);
         return ResponseResult.okResult();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:category:list')")
     @PostMapping
     public ResponseResult saveCategory(@RequestBody Category category) {
         categoryService.save(category);
         return ResponseResult.okResult();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:category:list')")
     @DeleteMapping("/{id}")
     public ResponseResult deleteCategory(@PathVariable("id") Long id) {
         categoryService.removeById(id);
         return ResponseResult.okResult();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:category:export')")
     @GetMapping("/export")
     public void export(HttpServletResponse response){
         //设置下载文件请求头
