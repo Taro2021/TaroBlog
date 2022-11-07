@@ -17,6 +17,11 @@ public class SystemConstants
     public static final String STATUS_NORMAL = "0";
 
     /**
+     * 禁用状态
+     */
+    public static final String STATUS_DISABLE = "1";
+
+    /**
      * 友联审核状态 0 表示通过
      */
     public static final int LINK_STATUS_NORMAL = 0;

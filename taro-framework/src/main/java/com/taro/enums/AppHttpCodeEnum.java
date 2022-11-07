@@ -21,7 +21,9 @@ public enum AppHttpCodeEnum {
     NICKNAME_NOT_NULL(510,"昵称不能为空"),
     NICKNAME_EXIST(511,"昵称已存在"),
     LINK_ID_NOT_NULL(512, "友链id不能为空"),
-    DELETE_EXIT_CHILDREN(513, "存在子菜单不允许删除");;
+    DELETE_EXIT_CHILDREN(513, "存在子菜单不允许删除"),
+    ROLE_ID_NOT_NULL(514, "角色id不能为空"),
+    STATUS_ERR(515, "不合法的状态码");
 
     int code;
     String msg;

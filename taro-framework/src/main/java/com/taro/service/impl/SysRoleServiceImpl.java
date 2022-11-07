@@ -3,19 +3,25 @@ package com.taro.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.taro.constant.SystemConstants;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.RoleDto;
 import com.taro.domain.dto.SysRoleDto;
 import com.taro.domain.entity.SysRole;
 import com.taro.domain.vo.PageVo;
 import com.taro.domain.vo.SysRoleListVo;
+import com.taro.enums.AppHttpCodeEnum;
+import com.taro.exception.SystemException;
 import com.taro.mapper.SysRoleMapper;
 import com.taro.service.SysRoleService;
 import com.taro.utils.BeanCopyUtil;
+import com.taro.utils.SecurityUtils;
 import io.jsonwebtoken.lang.Strings;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 
 /**
@@ -59,6 +65,25 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         PageVo pageVo = new PageVo(sysRoleListVos, page.getTotal());
 
         return ResponseResult.okResult(pageVo);
+    }
+
+    /**
+     * 变更角色状态
+     * @return
+     */
+    @Override
+    public ResponseResult changeRoleStatus(RoleDto roleDto) {
+        if(Objects.isNull(roleDto.getRoleId())){
+            throw new SystemException(AppHttpCodeEnum.ROLE_ID_NOT_NULL);
+        }
+        if(!Strings.hasText(roleDto.getStatus()) ||
+                (!SystemConstants.STATUS_NORMAL.equals(roleDto.getStatus()) && !SystemConstants.STATUS_DISABLE.equals(roleDto.getStatus()))){
+            throw new SystemException(AppHttpCodeEnum.STATUS_ERR);
+        }
+        SysRole sysRole = getById(roleDto.getRoleId());
+        sysRole.setStatus(roleDto.getStatus());
+        updateById(sysRole);
+        return ResponseResult.okResult();
     }
 }
 
