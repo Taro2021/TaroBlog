@@ -1,6 +1,8 @@
 package com.taro.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.SysMenuDto;
 import com.taro.domain.entity.SysMenu;
 
 import java.util.List;
@@ -17,4 +19,13 @@ public interface SysMenuService extends IService<SysMenu> {
     List<String> selectPermsById(Long id);
 
     List<SysMenu> selectRouterMenuTreeByUserId(Long userId);
+
+    ResponseResult getMenuVoById(Long id);
+
+    ResponseResult updateSysMenu(SysMenu sysMenu);
+
+    ResponseResult deleteSysMenu(Long id);
+
+    ResponseResult listByDto(SysMenuDto sysMenuDto);
+
 }

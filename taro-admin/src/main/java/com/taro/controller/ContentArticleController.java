@@ -32,7 +32,7 @@ public class ContentArticleController {
     @PreAuthorize("@ps.hasPermission('content:article:list')")
     @GetMapping("/{id}")
     public ResponseResult getArticleInfoById(@PathVariable("id") Long id) {
-        return ResponseResult.okResult(articleService.getById(id));
+        return articleService.getArticleInfoById(id);
     }
 
     @PreAuthorize("@ps.hasPermission('content:article:writer')")

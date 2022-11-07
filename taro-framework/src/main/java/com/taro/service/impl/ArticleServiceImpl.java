@@ -11,16 +11,14 @@ import com.taro.domain.dto.AddArticleDto;
 import com.taro.domain.dto.ArticleListDto;
 import com.taro.domain.entity.Article;
 import com.taro.domain.entity.ArticleTag;
-import com.taro.domain.vo.ArticleDetailVo;
-import com.taro.domain.vo.ArticleListVo;
-import com.taro.domain.vo.HotArticleVo;
-import com.taro.domain.vo.PageVo;
+import com.taro.domain.vo.*;
 import com.taro.mapper.ArticleMapper;
 import com.taro.service.ArticleService;
 import com.taro.service.ArticleTagService;
 import com.taro.service.CategoryService;
 import com.taro.utils.BeanCopyUtil;
 import com.taro.utils.RedisCache;
+import lombok.val;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,8 +126,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public ResponseResult<PageVo> pageArticleList(Integer pageNum, Integer pageSize, ArticleListDto articleListDto) {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(StringUtils.hasText(articleListDto.getTitle()), Article :: getTitle, articleListDto.getTitle());
-        queryWrapper.eq(StringUtils.hasText(articleListDto.getSummary()), Article :: getSummary, articleListDto.getSummary());
+        //支持模糊查询
+        queryWrapper.like(StringUtils.hasText(articleListDto.getTitle()), Article :: getTitle, articleListDto.getTitle());
+        queryWrapper.like(StringUtils.hasText(articleListDto.getSummary()), Article :: getSummary, articleListDto.getSummary());
 
         Page<Article> page = new Page<>(pageNum, pageSize);
         page(page, queryWrapper);
@@ -180,5 +179,39 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
         return ResponseResult.okResult();
     }
+
+    /**
+     * 获取 文章信息，并且获取对应的 tag id
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult getArticleInfoById(Long id) {
+        Article article = super.getById(id);
+        ArticleTagDetailVo articleTagDetailVo = BeanCopyUtil.copyBean(article, ArticleTagDetailVo.class);
+        List<Long> tagIds = new ArrayList<>();
+
+        LambdaQueryWrapper<ArticleTag> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ArticleTag :: getArticleId, id);
+        List<ArticleTag> articleTags = articleTagService.list(queryWrapper);
+
+        for(ArticleTag articleTag : articleTags) tagIds.add(articleTag.getTagId());
+
+        articleTagDetailVo.setTags(tagIds);
+
+        return ResponseResult.okResult(articleTagDetailVo);
+    }
+
+    // @Override
+    // public ResponseResult deleteArticleById(Long id) {
+    //     super.removeById(id);
+    //     LambdaQueryWrapper<ArticleTag> queryWrapper = new LambdaQueryWrapper<>();
+    //     queryWrapper.eq(ArticleTag :: getArticleId, id);
+    //
+    //     //删除 tag 映射关系
+    //     articleTagService.remove(queryWrapper);
+    //
+    //     return ResponseResult.okResult();
+    // }
 
 }

@@ -1,6 +1,8 @@
 package com.taro.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.SysRoleDto;
 import com.taro.domain.entity.SysRole;
 
 import java.util.List;
@@ -15,4 +17,6 @@ import java.util.List;
 public interface SysRoleService extends IService<SysRole> {
 
     List<String> selectRoleKeyByUserId(Long id);
+
+    ResponseResult pageRoleList(Integer pageNum, Integer pageSize, SysRoleDto sysRoleDto);
 }

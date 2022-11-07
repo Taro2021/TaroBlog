@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true) //lombok 开启链式编程，每个方法会返回对象自身
 public class Article{
-    
+
+    @TableId
     private Long id;
     //标题
     private String title;

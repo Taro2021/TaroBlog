@@ -23,38 +23,45 @@ public class ContentLinkController {
     @Autowired
     private LinkService linkService;
 
+    @PreAuthorize("@ps.hasPermission('content:link:list')")
     @GetMapping("/list")
     public ResponseResult<PageVo> getContentLinkList(Integer pageNum, Integer pageSize, LinkListDto linkListDto) {
         return linkService.pageLinkList(pageNum, pageSize, linkListDto);
     }
 
+    @PreAuthorize("@ps.hasPermission('content:link:list')")
     @GetMapping("/getAllLink")
     public ResponseResult getAllLinks() {
         return linkService.getAllLinks();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:link:query')")
     @GetMapping("/{id}")
     public ResponseResult getLinkById(@PathVariable("id") Long id) {
         return linkService.getLinkById(id);
     }
 
+    @PreAuthorize("@ps.hasPermission('content:link:edit')")
     @PutMapping
     public ResponseResult updateLink(@RequestBody Link link) {
         linkService.updateById(link);
         return ResponseResult.okResult();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:link:add')")
     @PostMapping
     public ResponseResult saveLink(@RequestBody Link link) {
         linkService.save(link);
         return ResponseResult.okResult();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:link:edit')")
     @PutMapping("/changeLinkStatus")
     public ResponseResult changeLinkStatus(@RequestBody LinkListDto linkDto) {
         return linkService.changeLinkStatus(linkDto);
     }
 
+    @PreAuthorize("@ps.hasPermission('content:link:remove')")
     @DeleteMapping("/{id}")
     public ResponseResult deleteLink(@PathVariable("id") Long id) {
         linkService.removeById(id);

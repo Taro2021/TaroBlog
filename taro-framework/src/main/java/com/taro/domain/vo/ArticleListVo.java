@@ -25,7 +25,16 @@ public class ArticleListVo {
 
     private String thumbnail;
 
+    private Long categoryId;
+
     private Long viewCount;
+
+    //是否置顶（0否，1是）
+    private String isTop;
+    //状态（0已发布，1草稿）
+    private String status;
+    //是否允许评论 1是，0否
+    private String isComment;
 
     private Date createTime;
 

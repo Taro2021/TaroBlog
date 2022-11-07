@@ -64,7 +64,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     public ResponseResult<PageVo> pageCategoryList(Integer pageNum, Integer pageSize, CategoryListDto categoryListDto) {
 
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(StringUtils.hasText(categoryListDto.getName()), Category :: getName, categoryListDto.getName());
+        queryWrapper.like(StringUtils.hasText(categoryListDto.getName()), Category :: getName, categoryListDto.getName());
         queryWrapper.eq(StringUtils.hasText(categoryListDto.getStatus()), Category :: getStatus, categoryListDto.getStatus());
 
         Page<Category> page = new Page<>();

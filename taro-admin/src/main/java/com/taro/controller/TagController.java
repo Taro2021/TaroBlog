@@ -25,33 +25,39 @@ public class TagController {
     @Autowired
     private TagService tagService;
 
+    @PreAuthorize("@ps.hasPermission('content:article:query')")
     @GetMapping("/list")
     public ResponseResult<PageVo> tagList(Integer pageNum, Integer pageSize, TagListDto tagListDto) {
         return tagService.pageTagList(pageNum, pageSize, tagListDto);
     }
 
+    @PreAuthorize("@ps.hasPermission('content:article:query')")
     @GetMapping("/listAllTag")
     public ResponseResult listAllTag(){
         return tagService.listAllTag();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:article:update')")
     @PostMapping
     public ResponseResult saveTag(@RequestBody Tag tag) {
         tagService.save(tag);
         return ResponseResult.okResult();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:article:update')")
     @DeleteMapping( "/{id}")
     public ResponseResult deleteTag(@PathVariable("id") Long id) {
         tagService.removeById(id);
         return ResponseResult.okResult();
     }
 
+    @PreAuthorize("@ps.hasPermission('content:article:query')")
     @GetMapping(value = "/{id}")
     public ResponseResult<TagVo> getTagById(@PathVariable(value = "id") Long id) {
         return tagService.getTagById(id);
     }
 
+    @PreAuthorize("@ps.hasPermission('content:article:update')")
     @PutMapping
     public ResponseResult update(@RequestBody Tag tag) {
         tagService.updateById(tag);
