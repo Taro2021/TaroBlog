@@ -1,20 +1,25 @@
 package com.taro.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taro.constant.SystemConstants;
 import com.taro.domain.ResponseResult;
 import com.taro.domain.dto.SysMenuDto;
 import com.taro.domain.entity.SysMenu;
+import com.taro.domain.entity.SysRoleMenu;
+import com.taro.domain.vo.SysMenuTreeVo;
 import com.taro.domain.vo.SysMenuVo;
+import com.taro.domain.vo.SysRoleMenuTreeVo;
 import com.taro.enums.AppHttpCodeEnum;
 import com.taro.exception.SystemException;
 import com.taro.mapper.SysMenuMapper;
 import com.taro.service.SysMenuService;
+import com.taro.service.SysRoleMenuService;
 import com.taro.utils.BeanCopyUtil;
 import io.jsonwebtoken.lang.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +33,9 @@ import java.util.stream.Collectors;
  */
 @Service("sysMenuService")
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
+
+    @Autowired
+    private SysRoleMenuService sysRoleMenuService;
 
     //根据 id 查询权限
     @Override
@@ -126,6 +134,48 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> sysMenus = super.list(queryWrapper);
         return ResponseResult.okResult(sysMenus);
     }
+
+    @Override
+    public ResponseResult treeSelect() {
+        return ResponseResult.okResult(buildMenuVoTree());
+    }
+
+    @Override
+    @Transactional
+    public ResponseResult roleMenuTreeSelect(Long roleId) {
+        List<SysMenuTreeVo> sysMenuTreeVos = buildMenuVoTree();
+        LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRoleMenu :: getRoleId, roleId);
+
+        List<SysRoleMenu> sysRoleMenus = sysRoleMenuService.list(queryWrapper);
+        List<Long> menuIds = sysRoleMenus.stream()
+                .map(SysRoleMenu::getMenuId)
+                .collect(Collectors.toList());
+
+        return ResponseResult.okResult(new SysRoleMenuTreeVo(sysMenuTreeVos, menuIds));
+    }
+
+    private List<SysMenuTreeVo> buildMenuVoTree() {
+        SysMenuMapper baseMapper = getBaseMapper();
+        List<SysMenu> sysMenus = baseMapper.selectAllRouterMenu();
+
+        List<SysMenuTreeVo> sysMenuTreeVos = sysMenus.stream()
+                .map(menu -> BeanCopyUtil.copyBean(menu, SysMenuTreeVo.class).setLabel(menu.getMenuName()))
+                .collect(Collectors.toList());
+
+        return sysMenuTreeVos.stream()
+                .filter(menu -> menu.getParentId().equals(0L))
+                .map(menu -> menu.setChildren(getVoChildren(menu, sysMenuTreeVos)))
+                .collect(Collectors.toList());
+    }
+
+    private List<SysMenuTreeVo> getVoChildren(SysMenuTreeVo parent, List<SysMenuTreeVo> sysMenuTreeVos){
+        return sysMenuTreeVos.stream()
+                .filter(menu -> menu.getParentId().equals(parent.getId()))
+                .map(menu -> menu.setChildren(getVoChildren(menu, sysMenuTreeVos)))
+                .collect(Collectors.toList());
+    }
+
 
     private List<SysMenu> buildMenuTree(List<SysMenu> menus, Long parentId) {
         return menus.stream()

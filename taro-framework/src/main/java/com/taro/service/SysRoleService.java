@@ -2,8 +2,10 @@ package com.taro.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.AddRoleDto;
 import com.taro.domain.dto.RoleDto;
 import com.taro.domain.dto.SysRoleDto;
+import com.taro.domain.dto.UpdateRoleDto;
 import com.taro.domain.entity.SysRole;
 
 import java.util.List;
@@ -23,4 +25,11 @@ public interface SysRoleService extends IService<SysRole> {
 
     ResponseResult changeRoleStatus(RoleDto roleDto);
 
+    ResponseResult saveSysRole(AddRoleDto addRoleDto);
+
+    ResponseResult getRoleInfoById(Long id);
+
+    ResponseResult updateRoleInfo(UpdateRoleDto updateRoleDto);
+
+    // ResponseResult deleteRole(Long id);
 }

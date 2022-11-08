@@ -53,4 +53,16 @@ public class SystemMenuController {
     public ResponseResult deleteMenu(@PathVariable("id") Long id) {
         return sysMenuService.deleteSysMenu(id);
     }
+
+    @PreAuthorize("@ps.hasPermission('system:menu:query')")
+    @GetMapping("/treeselect")
+    public ResponseResult treeSelect() {
+        return sysMenuService.treeSelect();
+    }
+
+    @PreAuthorize("@ps.hasPermission('system:menu:query')")
+    @GetMapping("/roleMenuTreeselect/{id}")
+    public ResponseResult roleMenuTreeSelect(@PathVariable("id") Long id) {
+        return sysMenuService.roleMenuTreeSelect(id);
+    }
 }

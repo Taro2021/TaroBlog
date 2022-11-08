@@ -28,4 +28,7 @@ public interface SysMenuService extends IService<SysMenu> {
 
     ResponseResult listByDto(SysMenuDto sysMenuDto);
 
+    ResponseResult treeSelect();
+
+    ResponseResult roleMenuTreeSelect(Long roleId);
 }

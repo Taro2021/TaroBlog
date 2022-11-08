@@ -5,24 +5,32 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taro.constant.SystemConstants;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.AddRoleDto;
 import com.taro.domain.dto.RoleDto;
 import com.taro.domain.dto.SysRoleDto;
+import com.taro.domain.dto.UpdateRoleDto;
 import com.taro.domain.entity.SysRole;
+import com.taro.domain.entity.SysRoleMenu;
 import com.taro.domain.vo.PageVo;
 import com.taro.domain.vo.SysRoleListVo;
+import com.taro.domain.vo.SysRoleVo;
 import com.taro.enums.AppHttpCodeEnum;
 import com.taro.exception.SystemException;
 import com.taro.mapper.SysRoleMapper;
+import com.taro.service.SysRoleMenuService;
 import com.taro.service.SysRoleService;
 import com.taro.utils.BeanCopyUtil;
 import com.taro.utils.SecurityUtils;
 import io.jsonwebtoken.lang.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 /**
  * 角色信息表(SysRole)表服务实现类
@@ -32,6 +40,9 @@ import java.util.Queue;
  */
 @Service("sysRoleService")
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {
+
+    @Autowired
+    private SysRoleMenuService sysRoleMenuService;
 
     @Override
     public List<String> selectRoleKeyByUserId(Long id) {
@@ -84,6 +95,64 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         sysRole.setStatus(roleDto.getStatus());
         updateById(sysRole);
         return ResponseResult.okResult();
+    }
+
+    /**
+     * 添加新角色，并建立角色于菜单的映射
+     * @param addRoleDto
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResponseResult saveSysRole(AddRoleDto addRoleDto) {
+        SysRole sysRole = BeanCopyUtil.copyBean(addRoleDto, SysRole.class);
+        save(sysRole);
+        saveRoleMenu(sysRole.getId(), addRoleDto.getMenuIds());
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult getRoleInfoById(Long id) {
+        return ResponseResult.okResult(BeanCopyUtil.copyBean(getById(id), SysRoleVo.class));
+    }
+
+    /**
+     * 更新角色信息，并更新菜单映射
+     * @param updateRoleDto
+     * @return
+     */
+    @Override
+    public ResponseResult updateRoleInfo(UpdateRoleDto updateRoleDto) {
+        SysRole sysRole = BeanCopyUtil.copyBean(updateRoleDto, SysRole.class);
+        updateById(sysRole);
+        deleteRoleMenu(updateRoleDto.getId());
+        saveRoleMenu(updateRoleDto.getId(), updateRoleDto.getMenuIds());
+        return ResponseResult.okResult();
+    }
+
+    // @Override
+    // public ResponseResult deleteRole(Long roleId) {
+    //     deleteRoleMenu(roleId);
+    //     removeById(roleId);
+    //     return ResponseResult.okResult();
+    // }
+
+    /**
+     * 保存角色和菜单映射
+     * @param roleId
+     * @param menuIds
+     */
+    public void saveRoleMenu(Long roleId, List<Long> menuIds){
+        List<SysRoleMenu> roleMenus = menuIds.stream()
+                .map(menuId -> new SysRoleMenu(roleId, menuId))
+                .collect(Collectors.toList());
+        sysRoleMenuService.saveBatch(roleMenus);
+    }
+
+    public void deleteRoleMenu(Long roleId) {
+        LambdaQueryWrapper<SysRoleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRoleMenu::getRoleId, roleId);
+        sysRoleMenuService.remove(queryWrapper);
     }
 }
 
