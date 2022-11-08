@@ -1,21 +1,28 @@
 package com.taro.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.UserDto;
+import com.taro.domain.dto.UserListDto;
 import com.taro.domain.entity.LoginUser;
 import com.taro.domain.entity.User;
+import com.taro.domain.vo.PageVo;
 import com.taro.domain.vo.UserInfoVo;
 import com.taro.enums.AppHttpCodeEnum;
 import com.taro.exception.SystemException;
 import com.taro.mapper.UserMapper;
+import com.taro.service.SysRoleService;
 import com.taro.service.UserService;
 import com.taro.utils.BeanCopyUtil;
 import com.taro.utils.SecurityUtils;
+import io.jsonwebtoken.lang.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.SQLOutput;
@@ -33,6 +40,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     @Override
     public ResponseResult getUserInfo() {
@@ -80,6 +88,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPassword(encode);
         super.save(user);
         return ResponseResult.okResult();
+    }
+
+    /**
+     * 分页查询 user 信息
+     * @param pageNum
+     * @param pageSize
+     * @param userListDto
+     * @return
+     */
+    @Override
+    public ResponseResult<PageVo> userPageList(Integer pageNum, Integer pageSize, UserListDto userListDto) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.like(Strings.hasText(userListDto.getUserName()), User :: getUserName,  userListDto.getUserName());
+        queryWrapper.like(Strings.hasText(userListDto.getPhonenumber()), User :: getPhonenumber, userListDto.getPhonenumber());
+        queryWrapper.eq(Strings.hasText(userListDto.getStatus()), User :: getStatus, userListDto.getStatus());
+
+        Page<User> page = new Page<>(pageNum, pageSize);
+        page(page, queryWrapper);
+        PageVo pageVo = new PageVo(page.getRecords(), page.getTotal());
+
+        return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    @Transactional
+    public ResponseResult saveUser(UserDto userDto) {
+        //TODO 用户信息校验存储
+        return null;
     }
 
     public boolean userNameExit(String username) {

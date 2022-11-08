@@ -130,6 +130,19 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         return ResponseResult.okResult();
     }
 
+    /**
+     * 列出所有正常的角色信息
+     * @return
+     */
+    @Override
+    public ResponseResult listAllRole() {
+        LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRole :: getStatus, SystemConstants.STATUS_NORMAL);
+        List<SysRole> roles = list(queryWrapper);
+        List<SysRoleListVo> sysRoleListVos = BeanCopyUtil.copyBeanList(roles, SysRoleListVo.class);
+        return ResponseResult.okResult(sysRoleListVos);
+    }
+
     // @Override
     // public ResponseResult deleteRole(Long roleId) {
     //     deleteRoleMenu(roleId);

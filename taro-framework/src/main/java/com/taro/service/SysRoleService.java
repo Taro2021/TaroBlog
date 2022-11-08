@@ -31,5 +31,8 @@ public interface SysRoleService extends IService<SysRole> {
 
     ResponseResult updateRoleInfo(UpdateRoleDto updateRoleDto);
 
+    ResponseResult listAllRole();
+
+
     // ResponseResult deleteRole(Long id);
 }

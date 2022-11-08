@@ -10,10 +10,13 @@ import com.taro.domain.entity.ArticleTag;
 import com.taro.domain.entity.Tag;
 import com.taro.domain.vo.PageVo;
 import com.taro.domain.vo.TagVo;
+import com.taro.enums.AppHttpCodeEnum;
+import com.taro.exception.SystemException;
 import com.taro.mapper.TagMapper;
 import com.taro.service.ArticleTagService;
 import com.taro.service.TagService;
 import com.taro.utils.BeanCopyUtil;
+import io.jsonwebtoken.lang.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -31,6 +34,15 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
 
     @Autowired
     private ArticleTagService articleTagService;
+
+    public void correctFormat(Tag tag) {
+        if(!Strings.hasText(tag.getName())) {
+            throw new SystemException(AppHttpCodeEnum.TAG_NAME_NOT_NULL);
+        }
+        if(!Strings.hasText(tag.getRemark())) {
+            throw new SystemException(AppHttpCodeEnum.TAG_REMARK_NOT_NULL);
+        }
+    }
 
     @Override
     public ResponseResult<PageVo> pageTagList(Integer pageNum, Integer pageSize, TagListDto tagListDto) {
@@ -59,6 +71,21 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
         List<Tag> tags = super.list();
         List<TagVo> tagVos = BeanCopyUtil.copyBeanList(tags, TagVo.class);
         return ResponseResult.okResult(tagVos);
+    }
+
+    @Override
+    public ResponseResult saveTag(Tag tag) {
+        //格式校验
+        correctFormat(tag);
+        save(tag);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult updateTag(Tag tag) {
+        correctFormat(tag);
+        updateById(tag);
+        return ResponseResult.okResult();
     }
 
     /**
