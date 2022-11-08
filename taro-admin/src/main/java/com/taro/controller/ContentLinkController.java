@@ -44,15 +44,13 @@ public class ContentLinkController {
     @PreAuthorize("@ps.hasPermission('content:link:edit')")
     @PutMapping
     public ResponseResult updateLink(@RequestBody Link link) {
-        linkService.updateById(link);
-        return ResponseResult.okResult();
+        return linkService.updateLink(link);
     }
 
     @PreAuthorize("@ps.hasPermission('content:link:add')")
     @PostMapping
     public ResponseResult saveLink(@RequestBody Link link) {
-        linkService.save(link);
-        return ResponseResult.okResult();
+        return linkService.saveLink(link);
     }
 
     @PreAuthorize("@ps.hasPermission('content:link:edit')")

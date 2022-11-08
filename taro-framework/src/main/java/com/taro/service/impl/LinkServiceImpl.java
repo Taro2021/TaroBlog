@@ -15,6 +15,7 @@ import com.taro.exception.SystemException;
 import com.taro.mapper.LinkMapper;
 import com.taro.service.LinkService;
 import com.taro.utils.BeanCopyUtil;
+import io.jsonwebtoken.lang.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -30,6 +31,20 @@ import java.util.stream.Collectors;
  */
 @Service("linkService")
 public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements LinkService {
+
+
+    public void correctFormat(Link link) {
+        //友链格式校验，必须有名称，链接
+        if(!Strings.hasText(link.getName())) {
+            throw new SystemException(AppHttpCodeEnum.LINK_NAME_NOT_NULL);
+        }
+        if(!Strings.hasText(link.getDescription())) {
+            throw new SystemException(AppHttpCodeEnum.LINK_DESCRIPTION_NOT_NULL);
+        }
+        if(!Strings.hasText(link.getAddress())){
+            throw new SystemException(AppHttpCodeEnum.LINK_ADDRESS_NOT_NULL);
+        }
+    }
 
     @Override
     public ResponseResult getAllLinks() {
@@ -78,6 +93,23 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
         updateWrapper.set(StringUtils.hasText(linkDto.getStatus()), Link :: getStatus, linkDto.getStatus());
 
         super.update(updateWrapper);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult updateLink(Link link) {
+        if(Objects.isNull(link.getId()) || Objects.isNull(getById(link.getId()))) {
+            throw new SystemException(AppHttpCodeEnum.LINK_ID_NOT_NULL);
+        }
+        correctFormat(link);
+        updateById(link);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult saveLink(Link link) {
+        correctFormat(link);
+        save(link);
         return ResponseResult.okResult();
     }
 }

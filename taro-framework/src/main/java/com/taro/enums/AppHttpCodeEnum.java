@@ -25,7 +25,10 @@ public enum AppHttpCodeEnum {
     ROLE_ID_NOT_NULL(514, "角色id不能为空"),
     STATUS_ERR(515, "不合法的状态码"),
     TAG_NAME_NOT_NULL(516, "标签名不能为空"),
-    TAG_REMARK_NOT_NULL(517, "标签备注不能为空");
+    TAG_REMARK_NOT_NULL(517, "标签备注不能为空"),
+    LINK_NAME_NOT_NULL(518, "友链名不能为空"),
+    LINK_ADDRESS_NOT_NULL(519,"友链地址不能为空"),
+    LINK_DESCRIPTION_NOT_NULL(519,"友链描述不能为空");
 
     int code;
     String msg;
