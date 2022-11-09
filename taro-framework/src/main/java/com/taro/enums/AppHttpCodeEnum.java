@@ -28,7 +28,18 @@ public enum AppHttpCodeEnum {
     TAG_REMARK_NOT_NULL(517, "标签备注不能为空"),
     LINK_NAME_NOT_NULL(518, "友链名不能为空"),
     LINK_ADDRESS_NOT_NULL(519,"友链地址不能为空"),
-    LINK_DESCRIPTION_NOT_NULL(519,"友链描述不能为空");
+    LINK_DESCRIPTION_NOT_NULL(519,"友链描述不能为空"),
+    LINK_STATUS_ILLEGAL(520, "友链状态不合法"),
+    CATEGORY_NAME_NOT_NULL(521, "分类名不能为空"),
+    CATEGORY_DESCRIPTION_NOT_NULL(522, "分类描述不能为空"),
+    CATEGORY_STATUS_ILLEGAL(523, "分类状态不合法"),
+    ARTICLE_TITLE_NOT_NULL(524, "文章标题不能为空"),
+    ARTICLE_SUMMARY_NOT_NULL(525, "文章摘要不能为空"),
+    ARTICLE_STATUS_ILLEGAL(526, "文章状态不合法"),
+    ARTICLE_IS_TOP_ILLEGAL(527, "文章置顶状态不合法"),
+    ARTICLE_IS_COMMENT_ILLEGAL(528, "文章允许评论状态不合法"),
+    SYS_MENU_FORMAT_ILLEGAL(529, "菜单格式不合法"),
+    SYS_ROLE_FORMAT_ILLEGAL(530, "系统角色信息格式不合法");
 
     int code;
     String msg;

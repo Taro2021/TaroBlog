@@ -33,8 +33,6 @@ public class AddArticleDto {
     private String isTop;
     //状态（0已发布，1草稿）
     private String status;
-    //访问量
-    private Long viewCount;
     //是否允许评论 1是，0否
     private String isComment;
 

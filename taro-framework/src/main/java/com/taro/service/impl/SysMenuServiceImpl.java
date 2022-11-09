@@ -16,6 +16,7 @@ import com.taro.mapper.SysMenuMapper;
 import com.taro.service.SysMenuService;
 import com.taro.service.SysRoleMenuService;
 import com.taro.utils.BeanCopyUtil;
+import com.taro.utils.StatusCheckUtils;
 import io.jsonwebtoken.lang.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Autowired
     private SysRoleMenuService sysRoleMenuService;
+
+    public void checkFormat(SysMenu sysMenu) {
+        if(Objects.isNull(sysMenu.getParentId()) ||
+            !Strings.hasText(sysMenu.getMenuType()) ||
+            !Strings.hasText(sysMenu.getMenuName()) ||
+            Objects.isNull(sysMenu.getOrderNum()) ||
+            !Strings.hasText(sysMenu.getPath()) ||
+            StatusCheckUtils.statusIllegal(sysMenu.getVisible()) ||
+            StatusCheckUtils.statusIllegal(sysMenu.getStatus())) {
+            throw new SystemException(AppHttpCodeEnum.SYS_MENU_FORMAT_ILLEGAL);
+        }
+    }
 
     //根据 id 查询权限
     @Override
@@ -84,6 +97,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public ResponseResult updateSysMenu(SysMenu sysMenu) {
+        checkFormat(sysMenu);
         if(!Objects.isNull(sysMenu.getId()) && !Objects.isNull(sysMenu.getParentId())
                 && sysMenu.getId().compareTo(sysMenu.getParentId()) == 0){
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
@@ -153,6 +167,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .collect(Collectors.toList());
 
         return ResponseResult.okResult(new SysRoleMenuTreeVo(sysMenuTreeVos, menuIds));
+    }
+
+    @Override
+    public ResponseResult saveMenu(SysMenu sysMenu) {
+        checkFormat(sysMenu);
+        save(sysMenu);
+        return ResponseResult.okResult();
     }
 
     private List<SysMenuTreeVo> buildMenuVoTree() {

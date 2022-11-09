@@ -56,15 +56,13 @@ public class ContentCategoryController {
     @PreAuthorize("@ps.hasPermission('content:category:list')")
     @PutMapping
     public ResponseResult updateCategory(@RequestBody Category category) {
-        categoryService.updateById(category);
-        return ResponseResult.okResult();
+        return categoryService.updateCategory(category);
     }
 
     @PreAuthorize("@ps.hasPermission('content:category:list')")
     @PostMapping
     public ResponseResult saveCategory(@RequestBody Category category) {
-        categoryService.save(category);
-        return ResponseResult.okResult();
+        return categoryService.saveCategory(category);
     }
 
     @PreAuthorize("@ps.hasPermission('content:category:list')")

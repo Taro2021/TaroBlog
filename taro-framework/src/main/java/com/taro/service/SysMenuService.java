@@ -31,4 +31,6 @@ public interface SysMenuService extends IService<SysMenu> {
     ResponseResult treeSelect();
 
     ResponseResult roleMenuTreeSelect(Long roleId);
+
+    ResponseResult saveMenu(SysMenu sysMenu);
 }

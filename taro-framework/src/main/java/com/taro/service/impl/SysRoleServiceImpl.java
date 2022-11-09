@@ -21,6 +21,7 @@ import com.taro.service.SysRoleMenuService;
 import com.taro.service.SysRoleService;
 import com.taro.utils.BeanCopyUtil;
 import com.taro.utils.SecurityUtils;
+import com.taro.utils.StatusCheckUtils;
 import io.jsonwebtoken.lang.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Autowired
     private SysRoleMenuService sysRoleMenuService;
+
+    public void checkFormat(SysRole sysRole) {
+        if(!Strings.hasText(sysRole.getRoleName()) ||
+            !Strings.hasText(sysRole.getRoleKey()) ||
+            Objects.isNull(sysRole.getRoleSort()) ||
+                StatusCheckUtils.statusIllegal(sysRole.getStatus())) {
+            throw new SystemException(AppHttpCodeEnum.SYS_ROLE_FORMAT_ILLEGAL);
+        }
+    }
 
     @Override
     public List<String> selectRoleKeyByUserId(Long id) {
@@ -106,6 +116,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Transactional
     public ResponseResult saveSysRole(AddRoleDto addRoleDto) {
         SysRole sysRole = BeanCopyUtil.copyBean(addRoleDto, SysRole.class);
+        checkFormat(sysRole);
         save(sysRole);
         saveRoleMenu(sysRole.getId(), addRoleDto.getMenuIds());
         return ResponseResult.okResult();
@@ -124,6 +135,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public ResponseResult updateRoleInfo(UpdateRoleDto updateRoleDto) {
         SysRole sysRole = BeanCopyUtil.copyBean(updateRoleDto, SysRole.class);
+        checkFormat(sysRole);
         updateById(sysRole);
         deleteRoleMenu(updateRoleDto.getId());
         saveRoleMenu(updateRoleDto.getId(), updateRoleDto.getMenuIds());

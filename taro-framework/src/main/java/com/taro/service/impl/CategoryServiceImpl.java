@@ -12,10 +12,14 @@ import com.taro.domain.entity.Category;
 import com.taro.domain.vo.CategoryListVo;
 import com.taro.domain.vo.CategoryVo;
 import com.taro.domain.vo.PageVo;
+import com.taro.enums.AppHttpCodeEnum;
+import com.taro.exception.SystemException;
 import com.taro.mapper.CategoryMapper;
 import com.taro.service.ArticleService;
 import com.taro.service.CategoryService;
 import com.taro.utils.BeanCopyUtil;
+import com.taro.utils.StatusCheckUtils;
+import io.jsonwebtoken.lang.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -35,6 +39,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Autowired
     private ArticleService articleService;
+
+    public void correctFormat(Category category) {
+        if(!Strings.hasText(category.getName())) {
+            throw new SystemException(AppHttpCodeEnum.CATEGORY_NAME_NOT_NULL);
+        }
+        if(!Strings.hasText(category.getDescription())) {
+            throw new SystemException(AppHttpCodeEnum.CATEGORY_DESCRIPTION_NOT_NULL);
+        }
+        if(StatusCheckUtils.statusIllegal(category.getStatus())) {
+            throw new SystemException(AppHttpCodeEnum.CATEGORY_STATUS_ILLEGAL);
+        }
+    }
 
     @Override
     public ResponseResult getCategoryList() {
@@ -95,6 +111,20 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         List<Category> categories = super.list(queryWrapper);
         List<CategoryVo> categoryVos = BeanCopyUtil.copyBeanList(categories, CategoryVo.class);
         return ResponseResult.okResult(categoryVos);
+    }
+
+    @Override
+    public ResponseResult updateCategory(Category category) {
+        correctFormat(category);
+        updateById(category);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult saveCategory(Category category) {
+        correctFormat(category);
+        save(category);
+        return ResponseResult.okResult();
     }
 
 }

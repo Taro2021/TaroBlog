@@ -15,6 +15,7 @@ import com.taro.exception.SystemException;
 import com.taro.mapper.LinkMapper;
 import com.taro.service.LinkService;
 import com.taro.utils.BeanCopyUtil;
+import com.taro.utils.StatusCheckUtils;
 import io.jsonwebtoken.lang.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,7 +35,7 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
 
 
     public void correctFormat(Link link) {
-        //友链格式校验，必须有名称，链接
+        //友链格式校验，必须有名称，描述，链接地址，状态合法
         if(!Strings.hasText(link.getName())) {
             throw new SystemException(AppHttpCodeEnum.LINK_NAME_NOT_NULL);
         }
@@ -43,6 +44,9 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
         }
         if(!Strings.hasText(link.getAddress())){
             throw new SystemException(AppHttpCodeEnum.LINK_ADDRESS_NOT_NULL);
+        }
+        if(StatusCheckUtils.statusIllegal(link.getStatus()) && !"2".equals(link.getStatus())) {
+            throw new SystemException(AppHttpCodeEnum.LINK_STATUS_ILLEGAL);
         }
     }
 

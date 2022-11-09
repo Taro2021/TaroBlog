@@ -12,12 +12,16 @@ import com.taro.domain.dto.ArticleListDto;
 import com.taro.domain.entity.Article;
 import com.taro.domain.entity.ArticleTag;
 import com.taro.domain.vo.*;
+import com.taro.enums.AppHttpCodeEnum;
+import com.taro.exception.SystemException;
 import com.taro.mapper.ArticleMapper;
 import com.taro.service.ArticleService;
 import com.taro.service.ArticleTagService;
 import com.taro.service.CategoryService;
 import com.taro.utils.BeanCopyUtil;
 import com.taro.utils.RedisCache;
+import com.taro.utils.StatusCheckUtils;
+import io.jsonwebtoken.lang.Strings;
 import lombok.val;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.SyncFailedException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +51,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Autowired
     private ArticleTagService articleTagService;
+
+    public void correctFormat(AddArticleDto addArticleDto) {
+        if(!Strings.hasText(addArticleDto.getTitle())) {
+            throw new SystemException(AppHttpCodeEnum.ARTICLE_TITLE_NOT_NULL);
+        }
+        if(!Strings.hasText(addArticleDto.getSummary())) {
+            throw new SystemException(AppHttpCodeEnum.ARTICLE_SUMMARY_NOT_NULL);
+        }
+        if(StatusCheckUtils.statusIllegal(addArticleDto.getStatus())){
+            throw new SystemException(AppHttpCodeEnum.ARTICLE_STATUS_ILLEGAL);
+        }
+        if(StatusCheckUtils.statusIllegal(addArticleDto.getIsTop())) {
+            throw new SystemException(AppHttpCodeEnum.ARTICLE_IS_TOP_ILLEGAL);
+        }
+        if(StatusCheckUtils.statusIllegal(addArticleDto.getIsComment())) {
+            throw new SystemException(AppHttpCodeEnum.ARTICLE_IS_COMMENT_ILLEGAL);
+        }
+    }
 
     @Override
     public ResponseResult hotArticleList() {
@@ -145,6 +168,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     @Transactional
     public ResponseResult addArticle(AddArticleDto addArticleDto) {
+        correctFormat(addArticleDto);
         //存文章
         Article article = BeanCopyUtil.copyBean(addArticleDto, Article.class);
         super.save(article);
@@ -163,6 +187,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     @Transactional
     public ResponseResult updateArticle(AddArticleDto addArticleDto) {
+        correctFormat(addArticleDto);
         Article article = BeanCopyUtil.copyBean(addArticleDto, Article.class);
         super.updateById(article);
 

@@ -32,8 +32,7 @@ public class SystemMenuController {
     @PreAuthorize("@ps.hasPermission('system:menu:add')")
     @PostMapping
     public ResponseResult saveMenu(@RequestBody SysMenu sysMenu){
-        sysMenuService.save(sysMenu);
-        return ResponseResult.okResult();
+        return sysMenuService.saveMenu(sysMenu);
     }
 
     @PreAuthorize("@ps.hasPermission('system:menu:query')")
