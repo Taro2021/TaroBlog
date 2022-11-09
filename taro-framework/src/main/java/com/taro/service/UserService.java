@@ -2,6 +2,7 @@ package com.taro.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.taro.domain.ResponseResult;
+import com.taro.domain.dto.UpdateUserDto;
 import com.taro.domain.dto.UserDto;
 import com.taro.domain.dto.UserListDto;
 import com.taro.domain.entity.User;
@@ -26,4 +27,7 @@ public interface UserService extends IService<User> {
 
     ResponseResult saveUser(UserDto userDto);
 
+    ResponseResult getUserInfoById(Long id);
+
+    ResponseResult updateUser(UpdateUserDto updateUserDto);
 }
