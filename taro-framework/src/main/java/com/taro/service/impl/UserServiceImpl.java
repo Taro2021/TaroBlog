@@ -170,17 +170,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         checkFormat(user);
         Long userId = user.getId();
         if(Objects.isNull(userId)) {
-            System.out.println("1---------------------------------------------------------");
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
         }
         User userOld = getById(userId);
         if(Objects.isNull(userOld)) {
-            System.out.println("2---------------------------------------------------------");
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
         }
         //用户名不能更改
         if(!user.getUserName().equals(userOld.getUserName())) {
-            System.out.println("3---------------------------------------------------------");
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
         }
         //昵称更改了的话不能和别人重复
