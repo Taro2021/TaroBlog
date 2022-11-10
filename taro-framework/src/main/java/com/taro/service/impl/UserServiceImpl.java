@@ -184,13 +184,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
         }
         //昵称更改了的话不能和别人重复
-        if(!user.getNickName().equals(userOld.getNickName())) {
-            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(User :: getNickName, user.getNickName());
-            List<User> users = list(queryWrapper);
-            if(users.size() > 1) {
-                throw new SystemException(AppHttpCodeEnum.NICKNAME_EXIST);
-            }
+        if(!user.getNickName().equals(userOld.getNickName()) && nickNameExit(user.getNickName())) {
+            throw new SystemException(AppHttpCodeEnum.NICKNAME_EXIST);
         }
 
         updateById(user);
