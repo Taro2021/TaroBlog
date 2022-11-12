@@ -39,7 +39,8 @@ public enum AppHttpCodeEnum {
     ARTICLE_IS_TOP_ILLEGAL(527, "文章置顶状态不合法"),
     ARTICLE_IS_COMMENT_ILLEGAL(528, "文章允许评论状态不合法"),
     SYS_MENU_FORMAT_ILLEGAL(529, "菜单格式不合法"),
-    SYS_ROLE_FORMAT_ILLEGAL(530, "系统角色信息格式不合法");
+    SYS_ROLE_FORMAT_ILLEGAL(530, "系统角色信息格式不合法"),
+    ARTICLE_CATEGORY_NOT_NULL(531, "文章未分类");
 
     int code;
     String msg;

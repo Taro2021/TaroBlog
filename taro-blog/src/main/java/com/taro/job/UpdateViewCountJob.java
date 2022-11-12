@@ -41,7 +41,7 @@ public class UpdateViewCountJob {
                 .map(entry -> new Article(Long.parseLong(entry.getKey()), entry.getValue().longValue()))
                 .collect(Collectors.toList());
 
-        System.out.println(articles);
+        //System.out.println(articles);
         //更新到数据库中
         articleService.updateBatchById(articles);
     }

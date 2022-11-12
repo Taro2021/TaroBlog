@@ -59,6 +59,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         if(!Strings.hasText(addArticleDto.getSummary())) {
             throw new SystemException(AppHttpCodeEnum.ARTICLE_SUMMARY_NOT_NULL);
         }
+        if(Objects.isNull(addArticleDto.getCategoryId())){
+            throw new SystemException(AppHttpCodeEnum.ARTICLE_CATEGORY_NOT_NULL);
+        }
         if(StatusCheckUtils.statusIllegal(addArticleDto.getStatus())){
             throw new SystemException(AppHttpCodeEnum.ARTICLE_STATUS_ILLEGAL);
         }
