@@ -56,7 +56,7 @@ public class Article{
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT)
     private Long updateBy;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)

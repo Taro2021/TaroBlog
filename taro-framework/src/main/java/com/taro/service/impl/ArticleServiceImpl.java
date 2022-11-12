@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * Version 1.0
  */
 
-@Service
+@Service("ArticleServiceImpl")
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
 
     @Autowired

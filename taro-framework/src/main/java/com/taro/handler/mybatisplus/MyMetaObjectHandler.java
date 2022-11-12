@@ -6,6 +6,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
@@ -26,7 +27,11 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
+
         this.setFieldValByName("updateTime", new Date(), metaObject);
-        this.setFieldValByName(" ", SecurityUtils.getUserId(), metaObject);
+
+        //无用户登录时，直接返回不去填充元数据，避免填充元数据造成的空指针异常
+        if(Objects.isNull(SecurityUtils.getAuthentication())) return;
+        this.setFieldValByName("updateBy", SecurityUtils.getUserId(), metaObject);
     }
 }
